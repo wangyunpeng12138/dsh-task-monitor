@@ -1,0 +1,40 @@
+{
+  "name": "@dsh-monitor/bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Live task progress bridge for the DSH Task Monitor desktop app",
+  "license": "MIT",
+  "author": "wangyunpeng12138",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wangyunpeng12138/dsh-task-monitor.git",
+    "directory": "apps/plugin"
+  },
+  "homepage": "https://github.com/wangyunpeng12138/dsh-task-monitor#readme",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "files": [
+    "index.js",
+    "lib/**/*.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md"
+  ],
+  "engines": {
+    "dsh": ">=0.2.2-rc.1 <0.3.0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

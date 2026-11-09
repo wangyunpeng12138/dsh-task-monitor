@@ -1,0 +1,7 @@
+- insert:
+    - id: task-monitor-bridge
+      name: '@dsh-monitor/bridge'
+      config:
+        port: 0
+        coalesceMs: 150
+        maxTasks: 30

@@ -1,0 +1,33 @@
+{
+  "name": "@dsh-monitor/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Tauri desktop shell: transparent task ball and progress panel",
+  "license": "MIT",
+  "author": "wangyunpeng12138",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wangyunpeng12138/dsh-task-monitor.git",
+    "directory": "apps/desktop"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "typecheck": "vue-tsc --noEmit",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@dsh-monitor/protocol": "workspace:*",
+    "@tauri-apps/api": "^2.11.0",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.11.0",
+    "@vitejs/plugin-vue": "^5.2.0",
+    "typescript": "^5.9.2",
+    "vite": "^6.0.0",
+    "vue-tsc": "^2.2.0"
+  }
+}

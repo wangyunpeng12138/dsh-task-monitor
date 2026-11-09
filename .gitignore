@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+target/
+apps/desktop/src-tauri/target/
+apps/desktop/src-tauri/gen/
+*.tsbuildinfo
+
+# Local logs and test artifacts
+*.log
+logs/
+.screenshots/
+coverage/
+.temp/
+.tmp/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.local
+
+# IDE and OS files
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local installers
+*.msi

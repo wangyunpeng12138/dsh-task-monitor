@@ -1,0 +1,27 @@
+{
+  "name": "dsh-task-monitor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Windows floating task monitor for DeepSeek Harness: transparent progress ball, task panel and optional DSH bridge plugin",
+  "license": "MIT",
+  "author": "wangyunpeng12138",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wangyunpeng12138/dsh-task-monitor.git"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@9.13.0",
+  "scripts": {
+    "dev": "pnpm --filter @dsh-monitor/desktop dev",
+    "build": "pnpm -r --if-present build",
+    "test": "pnpm -r --if-present test",
+    "check": "pnpm -r --if-present typecheck",
+    "tauri": "pnpm --filter @dsh-monitor/desktop tauri"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}

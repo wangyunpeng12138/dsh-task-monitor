@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "DSH Task Monitor bridge",
+    "description": "Publishes live DSH session progress to the DSH Task Monitor desktop app over a loopback SSE endpoint."
+  }
+}
