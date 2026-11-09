@@ -69,12 +69,12 @@ const ring = computed(() => {
           : '#4c9aff'
   const track =
     status.value === 'waiting'
-      ? 'rgba(242,184,75,.16)'
+      ? 'rgba(242,184,75,.30)'
       : status.value === 'failed'
-        ? 'rgba(240,106,106,.16)'
+        ? 'rgba(240,106,106,.30)'
         : status.value === 'offline'
-          ? 'rgba(100,116,139,.16)'
-          : 'rgba(76,154,255,.16)'
+          ? 'rgba(100,116,139,.28)'
+          : 'rgba(76,154,255,.30)'
   if (percent === undefined) {
     return { background: `conic-gradient(from 210deg, ${color}, ${track} 70%)` }
   }

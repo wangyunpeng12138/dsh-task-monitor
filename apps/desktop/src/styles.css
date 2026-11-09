@@ -87,34 +87,42 @@ button {
   justify-content: center;
   gap: 1px;
   padding-bottom: 8px;
-  text-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.95),
-    0 0 6px rgba(0, 0, 0, 0.75);
 }
 
 .ball-count {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 800;
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
+  color: #0b1220;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.92);
+  paint-order: stroke fill;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.65);
 }
 
 .ball-glyph {
-  font-size: 20px;
+  font-size: 22px;
+  font-weight: 800;
   line-height: 1;
-  color: #cbd5e1;
+  color: #0b1220;
+  -webkit-text-stroke: 0.9px rgba(255, 255, 255, 0.92);
+  paint-order: stroke fill;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.65);
 }
 
 .ball-tip {
   position: absolute;
-  bottom: 7px;
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  color: #cbd5e1;
-  transform: scale(0.92);
+  bottom: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #0b1220;
+  transform: scale(0.94);
+  -webkit-text-stroke: 0.65px rgba(255, 255, 255, 0.95);
+  paint-order: stroke fill;
   text-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.95),
-    0 0 5px rgba(0, 0, 0, 0.8);
+    0 1px 2px rgba(255, 255, 255, 0.9),
+    0 0 4px rgba(255, 255, 255, 0.7);
 }
 
 .ball-alert {
@@ -138,19 +146,29 @@ button {
 }
 
 .ball.is-waiting .ball-tip {
-  color: var(--waiting);
+  color: #92400e;
 }
 
 .ball.is-running .ball-tip {
-  color: #9cc4ff;
+  color: #1d4ed8;
+}
+
+.ball.is-failed .ball-tip {
+  color: #b91c1c;
 }
 
 .ball.is-offline {
-  opacity: 0.68;
+  opacity: 0.85;
 }
 
 .ball.is-offline .ball-ring {
   filter: grayscale(1) opacity(0.7);
+}
+
+.ball.is-offline .ball-count,
+.ball.is-offline .ball-glyph,
+.ball.is-offline .ball-tip {
+  color: #334155;
 }
 
 @keyframes ringPulse {

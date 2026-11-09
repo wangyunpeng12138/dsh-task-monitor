@@ -15,6 +15,7 @@ DSH projection cache  ──read-only adapter────┘
 ## Features
 
 - **Fully transparent 72×72 ball** — only a progress ring, count/status text and an attention dot are painted; the desktop shows through.
+- **High-contrast ball text** — dark glyphs with a light outline stay readable on both light and dark wallpapers.
 - **Task panel** — waiting, running, failed and recently completed sessions, with Todo progress, current step, elapsed time, background jobs, goal and context pressure.
 - **Ball ↔ panel switching** — click the ball to open the panel, `◎` to return to the ball, `✕` to hide to the tray. Global hotkey `Ctrl+Alt+Shift+M` and the tray icon restore the panel.
 - **Two data channels**
