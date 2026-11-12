@@ -27,6 +27,11 @@ chrono = { version = "0.4", features = ["serde"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
+[features]
+# Required so a plain `cargo build --release` serves the embedded frontend
+# dist instead of the dev server URL (the tauri CLI enables this for builds).
+custom-protocol = ["tauri/custom-protocol"]
+
 [profile.release]
 panic = "abort"
 codegen-units = 1

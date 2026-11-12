@@ -7,7 +7,7 @@ import { useBallSnap } from '../composables/useBallSnap'
 import { PHASE_LABEL } from '../lib/format'
 import type { TaskSnapshot } from '@dsh-monitor/protocol'
 
-useBallSnap()
+const { edge, hovered, setHovered, notePointerMove, startDrag } = useBallSnap()
 const { state, tasks, aggregate } = useMonitorState()
 
 onMounted(async () => {
@@ -56,31 +56,44 @@ const count = computed(() => {
   return 0
 })
 
+/** True when the docked ball shows as a slim bar instead of the full ball. */
+const isBar = computed(() => edge.value !== null && !hovered.value)
+
+const palette = computed(() => {
+  if (status.value === 'waiting') {
+    return { color: '#f2b84b', track: 'rgba(242,184,75,.30)' }
+  }
+  if (status.value === 'failed') {
+    return { color: '#f06a6a', track: 'rgba(240,106,106,.30)' }
+  }
+  if (status.value === 'offline') {
+    return { color: '#64748b', track: 'rgba(100,116,139,.28)' }
+  }
+  return { color: '#4c9aff', track: 'rgba(76,154,255,.30)' }
+})
+
+const percent = computed(() => primary.value?.progress.percent)
+
 const ring = computed(() => {
-  const task = primary.value
-  const percent = task?.progress.percent
-  const color =
-    status.value === 'waiting'
-      ? '#f2b84b'
-      : status.value === 'failed'
-        ? '#f06a6a'
-        : status.value === 'offline'
-          ? '#64748b'
-          : '#4c9aff'
-  const track =
-    status.value === 'waiting'
-      ? 'rgba(242,184,75,.30)'
-      : status.value === 'failed'
-        ? 'rgba(240,106,106,.30)'
-        : status.value === 'offline'
-          ? 'rgba(100,116,139,.28)'
-          : 'rgba(76,154,255,.30)'
-  if (percent === undefined) {
+  const { color, track } = palette.value
+  if (percent.value === undefined) {
     return { background: `conic-gradient(from 210deg, ${color}, ${track} 70%)` }
   }
   return {
-    background: `conic-gradient(from 210deg, ${color} 0deg, ${color} ${percent * 3.6}deg, ${track} ${percent * 3.6}deg)`,
+    background: `conic-gradient(from 210deg, ${color} 0deg, ${color} ${percent.value * 3.6}deg, ${track} ${percent.value * 3.6}deg)`,
   }
+})
+
+const barTrack = computed(() => ({ background: palette.value.track }))
+
+const barFill = computed(() => {
+  const { color } = palette.value
+  const style: Record<string, string> = { background: color }
+  if (percent.value === undefined) return style
+  const length = `${Math.max(0, Math.min(100, percent.value))}%`
+  if (edge.value === 'left' || edge.value === 'right') style.height = length
+  else style.width = length
+  return style
 })
 
 const tooltip = computed(() => {
@@ -94,11 +107,7 @@ async function onPointerDown(event: PointerEvent) {
   if (event.button !== 0) return
   const target = event.target as HTMLElement | null
   if (target?.closest('.ball-action')) return
-  try {
-    await getCurrentWindow().startDragging()
-  } catch (error) {
-    console.warn('[ball] startDragging failed', error)
-  }
+  await startDrag()
 }
 
 async function onClick() {
@@ -117,17 +126,34 @@ function onContextMenu(event: MouseEvent) {
 <template>
   <main
     class="ball"
-    :class="[`is-${status}`]"
+    :class="[
+      `is-${status}`,
+      {
+        'is-bar': isBar,
+        'is-bar-v': isBar && (edge === 'left' || edge === 'right'),
+        'is-bar-h': isBar && (edge === 'top' || edge === 'bottom'),
+      },
+    ]"
     :title="tooltip"
+    @pointerenter="setHovered(true)"
+    @pointerleave="setHovered(false)"
+    @pointermove="notePointerMove"
     @pointerdown="onPointerDown"
     @contextmenu="onContextMenu"
   >
-    <div class="ball-ring" :style="ring" />
-    <div class="ball-inner ball-action" @click.stop="onClick" @dblclick.stop="onDoubleClick">
-      <span v-if="count > 0" class="ball-count">{{ count }}</span>
-      <span v-else class="ball-glyph">{{ status === 'offline' ? '—' : status === 'idle' ? '✓' : '·' }}</span>
-      <span v-if="status === 'waiting'" class="ball-alert">!</span>
-    </div>
-    <span class="ball-tip">{{ status === 'offline' ? '离线' : status === 'waiting' ? '需介入' : status === 'running' ? '运行中' : status === 'failed' ? '失败' : '空闲' }}</span>
+    <template v-if="isBar">
+      <div class="ball-bar" :style="barTrack">
+        <div class="ball-bar-fill" :class="{ indeterminate: percent === undefined }" :style="barFill" />
+      </div>
+    </template>
+    <template v-else>
+      <div class="ball-ring" :style="ring" />
+      <div class="ball-inner ball-action" @click.stop="onClick" @dblclick.stop="onDoubleClick">
+        <span v-if="count > 0" class="ball-count">{{ count }}</span>
+        <span v-else class="ball-glyph">{{ status === 'offline' ? '—' : status === 'idle' ? '✓' : '·' }}</span>
+        <span v-if="status === 'waiting'" class="ball-alert">!</span>
+      </div>
+      <span class="ball-tip">{{ status === 'offline' ? '离线' : status === 'waiting' ? '需介入' : status === 'running' ? '运行中' : status === 'failed' ? '失败' : '空闲' }}</span>
+    </template>
   </main>
 </template>
