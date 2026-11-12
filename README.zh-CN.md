@@ -38,6 +38,20 @@ DSH 投影缓存    ──只读文件适配────────┘
 
 ## 快速开始
 
+### 一键启动（Windows）
+
+双击 [`start.bat`](start.bat)，或在终端运行：
+
+```powershell
+.\start.bat            # 启动 release 版本
+.\start.bat -Rebuild   # 先重新构建，再启动
+.\start.bat -Dev       # Vite + Tauri 开发模式
+```
+
+脚本会启动 `target/release/dsh-task-monitor.exe`。如果该文件尚不存在，会先自动构建（需要 Rust 与 pnpm）。如果监控已在运行，再次启动会直接打开面板，不会产生第二个实例。
+
+### 手动启动
+
 ```powershell
 pnpm install
 pnpm --filter @dsh-monitor/desktop tauri dev
@@ -139,7 +153,8 @@ apps/desktop/              Tauri 2 + Vue 3 桌面端
 apps/plugin/               DSH Host bundle：事件折叠 + 回环桥
 packages/protocol/         两端共享的 TypeScript 协议类型
 docs/                      设计与架构文档
-scripts/                   图标生成、开发/构建、插件安装
+scripts/                   启动器、图标生成、开发/构建、插件安装
+start.bat                  Windows 一键启动脚本
 ```
 
 ## 开发与验证

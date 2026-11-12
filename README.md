@@ -38,6 +38,20 @@ DSH projection cache  ──read-only adapter────┘
 
 ## Quick start
 
+### One-click start (Windows)
+
+Double-click [`start.bat`](start.bat), or run:
+
+```powershell
+.\start.bat            # launch the release build
+.\start.bat -Rebuild   # rebuild first, then launch
+.\start.bat -Dev       # Vite + Tauri development mode
+```
+
+The launcher starts `target/release/dsh-task-monitor.exe`. If that file does not exist yet, it builds the release executable first (Rust and pnpm required). If the monitor is already running, launching again opens the panel instead of starting a second instance.
+
+### Manual start
+
 ```powershell
 pnpm install
 pnpm --filter @dsh-monitor/desktop tauri dev
@@ -139,7 +153,8 @@ apps/desktop/              Tauri 2 + Vue 3 desktop app
 apps/plugin/               DSH Host bundle: event fold + loopback bridge
 packages/protocol/         Shared TypeScript wire types
 docs/                      Design and architecture documents
-scripts/                   Icon generation, dev/build, plugin install
+scripts/                   Launcher, icon generation, dev/build helpers
+start.bat                  One-click Windows launcher
 ```
 
 ## Development and verification
