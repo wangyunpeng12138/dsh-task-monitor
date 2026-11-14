@@ -44,6 +44,12 @@ export function useBallSnap() {
   /** Timestamps to tell real pointer leaves from WebView2 synthetic ones. */
   let lastMoveAt = 0
   let expandedAt = 0
+  /**
+   * Set right after a drag docks the ball: WebView2 fires a synthetic
+   * pointerenter when the collapse resize happens under a cursor resting
+   * on the strip. Suppress hover expansion until the cursor really moves.
+   */
+  let hoverSuppressed = false
 
   async function readArea() {
     const monitor = await currentMonitor()
@@ -178,29 +184,44 @@ export function useBallSnap() {
       window.clearTimeout(collapseTimer)
       collapseTimer = undefined
     }
+    // A real cursor move cancels the post-drag suppression; if the cursor
+    // had entered while suppressed (e.g. resting on the strip right after
+    // docking), moving it now counts as a genuine hover.
+    if (hoverSuppressed) {
+      hoverSuppressed = false
+      if (!dragging && edge.value && !hovered.value) {
+        hovered.value = true
+        // +1ms keeps lastMoveAt strictly below expandedAt so a synthetic
+        // leave from this expand is still recognised and ignored.
+        expandedAt = Date.now() + 1
+        void apply(edge.value)
+      }
+    }
   }
 
   /** Expand (hover) / collapse (leave) a docked ball without moving its dock. */
   async function setHovered(value: boolean) {
-    if (dragging || hovered.value === value || !edge.value) return
+    if (dragging || !edge.value) return
     if (value) {
+      if (hoverSuppressed) return
       if (collapseTimer) {
         window.clearTimeout(collapseTimer)
         collapseTimer = undefined
       }
+      if (hovered.value) return
       hovered.value = true
       expandedAt = Date.now()
       await apply(edge.value)
       return
     }
+    if (!hovered.value || collapseTimer) return
     // WebView2 emits a synthetic pointerleave when the window resizes under
     // a stationary cursor, which would loop expand<->collapse. A leave right
     // after an expand with no cursor movement in between is synthetic.
     if (Date.now() - expandedAt < 500 && lastMoveAt < expandedAt) return
-    if (collapseTimer) window.clearTimeout(collapseTimer)
     collapseTimer = window.setTimeout(async () => {
       collapseTimer = undefined
-      if (dragging || hovered.value || !edge.value) return
+      if (dragging || !edge.value) return
       hovered.value = false
       await apply(edge.value)
     }, 150)
@@ -226,6 +247,7 @@ export function useBallSnap() {
   function endDrag() {
     if (!dragging) return
     dragging = false
+    hoverSuppressed = true
     if (dragIdle) {
       window.clearTimeout(dragIdle)
       dragIdle = undefined
