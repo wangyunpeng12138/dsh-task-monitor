@@ -66,13 +66,16 @@ const palette = computed(() => {
   if (status.value === 'failed') {
     return { color: '#f06a6a', track: 'rgba(240,106,106,.30)' }
   }
-  if (status.value === 'offline') {
+  if (status.value === 'offline' || status.value === 'empty') {
     return { color: '#64748b', track: 'rgba(100,116,139,.28)' }
   }
   return { color: '#4c9aff', track: 'rgba(76,154,255,.30)' }
 })
 
 const percent = computed(() => primary.value?.progress.percent)
+
+/** Only a genuinely running task without a percentage runs the marquee. */
+const isIndeterminate = computed(() => status.value === 'running' && percent.value === undefined)
 
 const ring = computed(() => {
   const { color, track } = palette.value
@@ -89,7 +92,15 @@ const barTrack = computed(() => ({ background: palette.value.track }))
 const barFill = computed(() => {
   const { color } = palette.value
   const style: Record<string, string> = { background: color }
-  if (percent.value === undefined) return style
+  if (percent.value === undefined) {
+    // Idle/empty/offline: solid strip, no motion (only a running task
+    // without progress animates, see isIndeterminate).
+    if (!isIndeterminate.value) {
+      if (edge.value === 'left' || edge.value === 'right') style.height = '100%'
+      else style.width = '100%'
+    }
+    return style
+  }
   const length = `${Math.max(0, Math.min(100, percent.value))}%`
   if (edge.value === 'left' || edge.value === 'right') style.height = length
   else style.width = length
@@ -143,7 +154,7 @@ function onContextMenu(event: MouseEvent) {
   >
     <template v-if="isBar">
       <div class="ball-bar" :style="barTrack">
-        <div class="ball-bar-fill" :class="{ indeterminate: percent === undefined }" :style="barFill" />
+        <div class="ball-bar-fill" :class="{ indeterminate: isIndeterminate }" :style="barFill" />
       </div>
     </template>
     <template v-else>
